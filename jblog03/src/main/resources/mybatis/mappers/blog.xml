@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="blog">
+	<select id="getBlog" parameterType="String" resultType="blogvo">
+		<![CDATA[
+			select blog.id, title, logo
+			  from blog, user
+			 where user.id = blog.id
+			   and blog.id= #{id }
+		]]>
+	</select>
+	
+	<select id="getCategory" parameterType="Long" resultType="categoryvo">
+		<![CDATA[
+			select no, name, description, reg_date as regDate, b.id
+  			  from category c, blog b
+			 where c.id = b.id
+			   and c.no = #{categoryNo }
+		  order by regDate desc
+		]]>
+	</select>
+	
+	<select id="categoryList" parameterType="string" resultType="categoryvo">
+		<![CDATA[
+				select c.no, c.name, count(p.no) as postcount ,c.description
+				  from category c
+				  left join post p on(c.no = p.category_no)
+				 where c.id = 1
+			group by c.name
+			order by 1;
+		]]>
+	</select>
+	
+	<delete id="deleteCategory" parameterType="long">
+	<![CDATA[
+		
+		delete from category where no = #{no }
+	
+	]]>
+	</delete>
+	
+	<select id="getPost" parameterType="Long" resultType="postvo">
+		<![CDATA[
+			select p.no, title, contents, p.reg_date as regDate, p.category_no
+  			  from post p, category c
+ 			 where p.category_no = c.no
+      		   and p.category_no = #{postNo }
+          order by regDate desc
+		]]>
+	</select>
+	
+	
+	
+	
+	<insert id="blogInsert" parameterType="uservo">
+		<![CDATA[
+			insert into blog values( #{id },'하이', '/images/202021632227725.jpg' )
+		]]>
+	</insert>
+	
+	<update id="update" parameterType="blogvo">
+	<choose>
+		<when test="logo == null">
+		<![CDATA[
+			update blog 
+			   set title= #{title }
+			 where id = 1
+	
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+			update blog 
+			   set title= #{title }, logo=#{logo }
+			 where id = 1
+	
+		]]>
+	</otherwise>
+	</choose>
+	</update>
+
+</mapper>

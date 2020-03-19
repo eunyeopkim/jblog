@@ -35,6 +35,9 @@ public class CategoryRepository {
 	public int categoryDelete(Long no) {
 		return sqlSession.delete("category.categoryDelete", no);
 	}
+	public int categoryCount(String id) {
+		return sqlSession.selectOne("category.categoryCount", id);
+	}
 
 
 }

@@ -27,7 +27,7 @@
 			      			<td>
 			      				<input type="text" size="60" name="title">
 				      			<select name="categoryNo">
-				      				<c:forEach var="vo" items="${categoryList }" varStatus='status'>
+				      				<c:forEach var="vo" items="${categoryList }"  varStatus='status'>
 				      					<option value="${vo.no }">${vo.name }</option>
 				      				</c:forEach>
 				      			</select>

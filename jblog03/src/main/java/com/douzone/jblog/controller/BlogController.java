@@ -56,6 +56,7 @@ public class BlogController {
 	
 	@RequestMapping(value="/admin/basic", method=RequestMethod.POST )
 	public String adminBasic(
+			@PathVariable String id,
 			@AuthUser BlogVo authUser,
 			@ModelAttribute BlogVo blogVo,
 			@RequestParam(value="logo-file") MultipartFile multipartFile,
@@ -66,7 +67,7 @@ public class BlogController {
 			model.addAttribute("url", url);
 			model.addAttribute("blogVo",blogVo);
 			
-			return "redirect:/"+blogVo.getId();
+			return "redirect:/"+ id;
 	}
 	
 	
@@ -84,6 +85,7 @@ public class BlogController {
 	}
 	@RequestMapping(value="/admin/insert",method = RequestMethod.POST)
 	public String adminCategoryInsert(
+			@PathVariable String id,
 			@AuthUser BlogVo authUser,
 			@RequestParam(value="name") String name,
 			@RequestParam(value="desc") String description,
@@ -95,20 +97,26 @@ public class BlogController {
 			categoryVo.setDescription(description);
 			blogService.categoryNewInsert(categoryVo);
 		
-			return "redirect:/"+categoryVo.getId()+"/admin/category";
+			return "redirect:/"+id+"/admin/category";
 			
 	}
 	
 	@RequestMapping(value="/admin/delete/{no}",method = RequestMethod.GET)
 	public String adminCategoryDelete(
+			@PathVariable String id,
 			@PathVariable("no") Long no,
 			@ModelAttribute CategoryVo categoryVo) {
 			
-			blogService.categoryDelete(no);
-			return "redirect:/"+categoryVo.getId()+"/admin/category";
+			
+			int count = blogService.categoryCount(id);
+			if(count > 1) {
+				blogService.categoryDelete(no);
+			}
+			return "redirect:/"+id+"/admin/category";
 	}
 	@RequestMapping(value="/admin/postInsert", method = RequestMethod.POST)
 	public String adminPostInsert(
+			@PathVariable String id,
 			@AuthUser BlogVo authUser,
 			@ModelAttribute CategoryVo categoryVo, 
 			@ModelAttribute PostVo postVo,
@@ -117,7 +125,7 @@ public class BlogController {
 			categoryVo.setId(authUser.getId());			
 			blogService.postNewInsert(postVo);	
 			
-		return "redirect:/"+authUser.getId()+"/admin/category";
+		return "redirect:/"+id+"/admin/category";
 	}
 	
 	@RequestMapping(value= "/admin/write", method=RequestMethod.GET )

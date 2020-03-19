@@ -75,6 +75,10 @@ public class BlogService {
 		return categoryRepository.categoryDelete(no);
 		
 	}
+	public int categoryCount(String id) {
+		return categoryRepository.categoryCount(id);
+		
+	}
 	//Post
 //	public List<PostVo> postList(String id) {
 //		return postRepository.postList(id);
@@ -136,6 +140,7 @@ public class BlogService {
 
 		return filename;
 	}
+
 
 
 

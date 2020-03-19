@@ -48,14 +48,21 @@
 			</choose>
 		
 	</insert>
-	
-	
-		<delete id="categoryDelete" parameterType="long">
-	<![CDATA[
+	<select id="categoryCount" parameterType="string" resultType="integer">
+		<![CDATA[
+			
+			select count(*) from category where id=#{id }
 		
-		delete from category where no = #{no }
+		]]>
+	</select>
 	
-	]]>
+	
+	<delete id="categoryDelete" parameterType="long">
+		<![CDATA[
+			
+			delete from category where no = #{no }
+		
+		]]>
 	</delete>
 	
 	

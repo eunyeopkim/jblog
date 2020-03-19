@@ -4,7 +4,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.douzone.jblog.repository.BlogRepository;
+import com.douzone.jblog.repository.CategoryRepository;
+import com.douzone.jblog.repository.PostRepository;
 import com.douzone.jblog.vo.BlogVo;
 import com.douzone.jblog.vo.CategoryVo;
 import com.douzone.jblog.vo.PostVo;
@@ -26,35 +30,59 @@ public class BlogService {
 	@Autowired
 	private BlogRepository blogRepository;
 	
+	@Autowired
+	private CategoryRepository categoryRepository;
+	
+	@Autowired
+	private PostRepository postRepository;
 	
 	
 	//Main
 	public ModelMap getAll(String id, Long categoryNo, Long postNo) {
+		Map<String, Object> map = new HashMap();
+		map.put("id", id);
+		map.put("categoryNo", categoryNo);
+		map.put("postNo", postNo);
+		
+		
 		BlogVo blogVo = blogRepository.getBlog(id);
-		System.out.println("blogVo:" + blogVo);
-		
-		List<CategoryVo> categoryVo = blogRepository.getCategory(categoryNo);
-			System.out.println("categoryNo: " + categoryNo);
-		
-		List<PostVo> postVo = blogRepository.getPost(postNo);
-		System.out.println("postVo: " + postVo);
+		List<CategoryVo> categoryVo = categoryRepository.getCategory(id);
+		List<PostVo> postVo = postRepository.getPost(map);
+		PostVo postVoContents = postRepository.getPostContents(map);
 		
 		ModelMap modelMap = new ModelMap();
 		modelMap.put("blogVo",blogVo);
 		modelMap.put("categoryVo",categoryVo);
 		modelMap.put("postVo",postVo);
+		modelMap.put("postVoContents", postVoContents);
+
+		for (PostVo postVo2 : postVo) {
+			System.out.println(postVo2.toString());
+		}
+		
 		return modelMap;
 	}
 	//Category
 	public List<CategoryVo> categoryList(String id) {
-		return blogRepository.categoryList(id);
+		return categoryRepository.categoryList(id);
+		
+	}
+	public int categoryNewInsert(CategoryVo categoryVo) {
+		return categoryRepository.categoryNewInsert(categoryVo);
 		
 	}
 	public int categoryDelete(Long no) {
-		return blogRepository.categoryDelete(no);
+		return categoryRepository.categoryDelete(no);
 		
 	}
-
+	//Post
+//	public List<PostVo> postList(String id) {
+//		return postRepository.postList(id);
+//	}
+	
+	public int postNewInsert(PostVo postVo) {
+		return postRepository.postNewInsert(postVo);
+	}
 	//Basic
 	public BlogVo findById(String id) {
 		return blogRepository.getBlog(id);
@@ -108,6 +136,9 @@ public class BlogService {
 
 		return filename;
 	}
+
+
+
 	
 
 	

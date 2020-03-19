@@ -3,8 +3,6 @@ package com.douzone.jblog.controller;
 import java.util.List;
 import java.util.Optional;
 
-import javax.swing.text.html.FormSubmitEvent.MethodType;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.douzone.jblog.service.BlogService;
 import com.douzone.jblog.vo.BlogVo;
 import com.douzone.jblog.vo.CategoryVo;
+import com.douzone.jblog.vo.PostVo;
 import com.douzone.security.AuthUser;
 
 @Controller
@@ -33,18 +32,18 @@ public class BlogController {
 		@PathVariable String id,
 		@PathVariable Optional<Long> pathNo1,
 		@PathVariable Optional<Long> pathNo2,
-		ModelMap modelMap ) {
+		ModelMap modelMap) {
 
 		Long categoryNo = 0L;
 		Long postNo = 0L;
 		
 		if( pathNo2.isPresent() ) {
+			
 			postNo = pathNo2.get();
 			categoryNo = pathNo1.get();
 		} else if( pathNo1.isPresent() ){
-			postNo = pathNo1.get();
+			categoryNo = pathNo1.get();
 		}
-		// categoryNo, postNo가 0으로 넘어오는걸 query로 처리해서 동적쿼리되게 만들기
 		
 		modelMap.putAll( blogService.getAll( id, categoryNo, postNo ) );
 		return "blog/blog-main";
@@ -62,11 +61,8 @@ public class BlogController {
 			@RequestParam(value="logo-file") MultipartFile multipartFile,
 			Model model) {
 			
-			System.out.println("##############" + blogVo);
-			
 			String url = blogService.restore(blogVo,multipartFile);
 			blogVo = blogService.findById(authUser.getId());
-			
 			model.addAttribute("url", url);
 			model.addAttribute("blogVo",blogVo);
 			
@@ -79,23 +75,60 @@ public class BlogController {
 			@AuthUser BlogVo authUser,
 			@ModelAttribute CategoryVo categoryVo,
 			Model model) {
+			
 			categoryVo.setId(authUser.getId());
 			List<CategoryVo> categoryList = blogService.categoryList(categoryVo.getId());
 			model.addAttribute("categoryList",categoryList);
 			
 		return "blog/blog-admin-category";
-	}	
+	}
+	@RequestMapping(value="/admin/insert",method = RequestMethod.POST)
+	public String adminCategoryInsert(
+			@AuthUser BlogVo authUser,
+			@RequestParam(value="name") String name,
+			@RequestParam(value="desc") String description,
+			Model model) {
+			
+			CategoryVo categoryVo = new CategoryVo();
+			categoryVo.setId(authUser.getId());
+			categoryVo.setName(name);
+			categoryVo.setDescription(description);
+			blogService.categoryNewInsert(categoryVo);
+		
+			return "redirect:/"+categoryVo.getId()+"/admin/category";
+			
+	}
 	
-	@RequestMapping(value="/delete/{no}",method = RequestMethod.GET)
+	@RequestMapping(value="/admin/delete/{no}",method = RequestMethod.GET)
 	public String adminCategoryDelete(
 			@PathVariable("no") Long no,
 			@ModelAttribute CategoryVo categoryVo) {
+			
 			blogService.categoryDelete(no);
 			return "redirect:/"+categoryVo.getId()+"/admin/category";
 	}
+	@RequestMapping(value="/admin/postInsert", method = RequestMethod.POST)
+	public String adminPostInsert(
+			@AuthUser BlogVo authUser,
+			@ModelAttribute CategoryVo categoryVo, 
+			@ModelAttribute PostVo postVo,
+			Model model) {
+		
+			categoryVo.setId(authUser.getId());			
+			blogService.postNewInsert(postVo);	
+			
+		return "redirect:/"+authUser.getId()+"/admin/category";
+	}
 	
 	@RequestMapping(value= "/admin/write", method=RequestMethod.GET )
-	public String adminWrite( @PathVariable String id ) {
+	public String adminWrite( 
+			@PathVariable String id ,
+			@ModelAttribute CategoryVo categoryVo,
+			Model model) {
+		
+			List<CategoryVo> categoryList = blogService.categoryList(categoryVo.getId());
+			model.addAttribute("categoryList",categoryList);
+			
 		return "blog/blog-admin-write";
 	}
 	

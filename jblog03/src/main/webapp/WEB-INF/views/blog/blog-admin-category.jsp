@@ -28,15 +28,16 @@
 		      			<th>설명</th>
 		      			<th>삭제</th>      			
 		      		</tr>
+		      		<c:set var='listCount' value='${fn:length(categoryList)}' />
 		      		<c:forEach var="vo" items="${categoryList }" varStatus='status'>
 					<tr>
-						<td>${vo.no }</td>
+						<td>${listCount-status.index}</td>
 						<td>${vo.name }</td>
 						<td>${vo.postcount }</td>
 						<td>${vo.description }</td>
 						<td>
 						<c:if test="${vo.postcount eq 0}">
-						<a href="${pageContext.request.contextPath}/${authUser.id }/delete/${vo.no}">
+						<a href="${pageContext.request.contextPath}/${authUser.id }/admin/delete/${vo.no}">
 							<img src="${pageContext.request.contextPath}/assets/images/delete.jpg"/>
 						</a>
 						</c:if>
@@ -47,6 +48,7 @@
 				</table>
       	
       			<h4 class="n-c">새로운 카테고리 추가</h4>
+      			<form action="${pageContext.request.contextPath}/${authUser.id }/admin/insert" method="post">
 		      	<table id="admin-cat-add">
 		      		<tr>
 		      			<td class="t">카테고리명</td>
@@ -59,8 +61,10 @@
 		      		<tr>
 		      			<td class="s">&nbsp;</td>
 		      			<td><input type="submit" value="카테고리 추가"></td>
-		      		</tr>      		      		
-		      	</table> 
+		      		</tr>
+		      	
+		      	</table>
+		      	</form> 
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/footer.jsp" />

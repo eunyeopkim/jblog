@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> <!-- 형식화 -->
 
 <div id="header">
-	<h1>블로그 관리</h1>
+	<h1>${blogVo.title }</h1>
 		<ul>
 			<c:choose>
 				<c:when test="${empty authUser }">

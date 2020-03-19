@@ -15,22 +15,18 @@
 </head>
 <body>
 	<div id="container">
-		<c:import url="/WEB-INF/views/includes/blogHeader.jsp" />
+		<c:import url="/WEB-INF/views/includes/blogMainHeader.jsp" />
 		<div id="wrapper">
 			<div id="content">
 				<div class="blog-content">
-					<h4>Sample</h4>
+					<h4>${postVoContents.title }</h4>
 					<p>
-					
-						Sample
-						1
-						
-						
+						${fn:replace(postVoContents.contents, newLine, "<br>") }
 					</p>
 				</div>
 				<ul class="blog-list">
-					<c:forEach var="vo" items="${postVo }" varStatus='status'>
-						<li><a href="">${vo.title }</a> <span>${vo.regDate }</span>	</li>
+					<c:forEach var="pvo" items="${postVo }" varStatus='status'>
+						<li><a href="${pageContext.request.contextPath}/${authUser.id }/${pvo.categoryNo }/${pvo.no}">${pvo.title }</a> <span>${pvo.regDate }</span>	</li>
 					</c:forEach>
 				</ul>
 			</div>
@@ -45,8 +41,8 @@
 		<div id="navigation">
 			<h2>카테고리</h2>
 			<ul>
-				<c:forEach var="vo" items="${categoryVo }" varStatus='status'>
-					<li><a href="">${vo.name }</a></li>
+				<c:forEach var="cvo" items="${categoryVo }" varStatus='status'>
+					<li><a href="${pageContext.request.contextPath}/${authUser.id }/${cvo.no }">${cvo.name }</a></li>
 				</c:forEach>
 			</ul>
 		</div>

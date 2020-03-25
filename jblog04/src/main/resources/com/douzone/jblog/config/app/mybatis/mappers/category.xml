@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="category">
+
+	
+	<select id="getCategory" parameterType="String" resultType="categoryvo">
+		<![CDATA[
+			select no, name, description, reg_date as regDate, b.id
+  			  from category c, blog b
+			 where c.id = b.id
+			   and b.id = #{id }
+		  order by regDate desc
+		]]>
+	</select>
+	
+	<select id="categoryList" parameterType="string" resultType="categoryvo">
+		<![CDATA[
+				select c.no, c.name, count(p.no) as postcount ,c.description
+				  from category c
+				  left join post p on(c.no = p.category_no)
+				 where c.id = #{id }
+			group by c.name
+			order by c.no desc
+		]]>
+	</select>
+	
+	<insert id="categoryInsert" parameterType="uservo">
+		<![CDATA[
+			insert into category values (null, '빈 칸입니다', null , now(), #{id } )
+		]]>
+	</insert>
+	
+	<insert id="categoryNewInsert" parameterType="categoryvo">
+		
+			<choose>
+				<when test="description == null">
+					<![CDATA[
+						insert into category 
+						values (null, #{name }, null , now(), #{id } )
+					]]>
+				</when>
+				<otherwise>
+					<![CDATA[
+						insert into category 
+						values (null, #{name }, #{description } , now(), #{id } )
+					]]>
+				</otherwise>
+			</choose>
+		
+	</insert>
+	<select id="categoryCount" parameterType="string" resultType="integer">
+		<![CDATA[
+			
+			select count(*) from category where id=#{id }
+		
+		]]>
+	</select>
+	
+	
+	<delete id="categoryDelete" parameterType="long">
+		<![CDATA[
+			
+			delete from category where no = #{no }
+		
+		]]>
+	</delete>
+	
+	
+</mapper>

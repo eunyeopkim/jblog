@@ -83,37 +83,9 @@ public class BlogController {
 			
 		return "blog/blog-admin-category";
 	}
-	@RequestMapping(value="/admin/insert",method = RequestMethod.POST)
-	public String adminCategoryInsert(
-			@PathVariable String id,
-			@AuthUser BlogVo authUser,
-			@RequestParam(value="name") String name,
-			@RequestParam(value="desc") String description,
-			Model model) {
-			
-			CategoryVo categoryVo = new CategoryVo();
-			categoryVo.setId(authUser.getId());
-			categoryVo.setName(name);
-			categoryVo.setDescription(description);
-			blogService.categoryNewInsert(categoryVo);
-		
-			return "redirect:/"+id+"/admin/category";
-			
-	}
+
 	
-	@RequestMapping(value="/admin/delete/{no}",method = RequestMethod.GET)
-	public String adminCategoryDelete(
-			@PathVariable String id,
-			@PathVariable("no") Long no,
-			@ModelAttribute CategoryVo categoryVo) {
-			
-			
-			int count = blogService.categoryCount(id);
-			if(count > 1) {
-				blogService.categoryDelete(no);
-			}
-			return "redirect:/"+id+"/admin/category";
-	}
+
 	@RequestMapping(value="/admin/postInsert", method = RequestMethod.POST)
 	public String adminPostInsert(
 			@PathVariable String id,

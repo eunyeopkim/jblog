@@ -1,0 +1,21 @@
+<%
+	var count = data.length + 1 ;
+	for(var i = 0; i < data.length; i++) {
+		var vo = data[i];
+		count -= 1;
+%>
+<tr>
+		<td><%= count%></td>
+		<td><%= vo.name%></td>
+		<td><%= vo.postcount%></td>
+		<td><%= vo.description%></td>
+		<td>
+			<a href='' data-no='<%=vo.no%>'>
+				<img src= '<%=data.url%>'/>
+			</a>
+				
+		</td>
+</tr>
+<%
+	}
+%>

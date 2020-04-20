@@ -43,6 +43,14 @@ public class BlogController {
 			@RequestBody CategoryVo categoryVo,
 			@PathVariable String id) {
 			categoryVo.setId(id);
+			
+			List<CategoryVo> categoryList = blogService.categoryList(categoryVo.getId());
+			for(CategoryVo vo : categoryList) {
+				if(categoryVo.getName().equals(vo.getName())) {
+					categoryVo.setNo(vo.getNo());
+					System.out.println(categoryVo.getNo());
+				}
+			}
 			blogService.categoryNewInsert(categoryVo);
 			return JsonResult.success(categoryVo);
 			

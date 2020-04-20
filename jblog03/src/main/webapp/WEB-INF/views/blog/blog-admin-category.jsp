@@ -31,7 +31,7 @@ var fetchList = function(){
 		dataType: 'json',
 		data: '',
 		success: function(response){
-			console.log(response);
+			
 			if(response.result != "success"){
 				console.error(response.message);
 				return;
@@ -59,7 +59,7 @@ $(function(){
 			var vo = {};
 			vo.name = $('#text-category').val();
 			vo.description = $('#text-description').val();
-			
+			vo.id = '${authUser.id}';
 			$.ajax({
 				url: '${pageContext.request.contextPath }/${authUser.id}/api/add',
 				async: true,
@@ -74,11 +74,14 @@ $(function(){
 					}
 					// rendering
 					var imgUrl = '${pageContext.request.contextPath}/assets/images/delete.jpg';
-					response.data.url = imgUrl; 
-					var pageContext = '${pageContext.request.contextPath }/${authUser.id}';
-					response.data.pageContext = pageContext;
+					response.data.url = imgUrl;
+					var lastNo = $(".admin-cat").find('tr').length;
+					response.data.lastNo = lastNo;
 					var html = listItemAddTemplate.render(response.data);
-					$(".admin-cat").prepend(html);
+					$(".admin-cat tr").first().after(html);
+					
+					// form reset
+					$("#add-form")[0].reset();
 					
 				},
 				error: function(xhr, status, e){
@@ -87,9 +90,11 @@ $(function(){
 			});
 		});
 		
-		$('.admin-cat tr th a').click(function(){
-			event.preventDefault();
-			
+		// 클릭시 삭제
+		$(document).on('click','.admin-cat tr td a',function(event){
+			event.preventDefault();			
+			var no = $(this).data('no');
+			console.log("delete   " + no);
 			$.ajax({
 				url: '${pageContext.request.contextPath }/${authUser.id}/api/delete/'+ no,
 				async: true,
@@ -101,9 +106,8 @@ $(function(){
 						console.error(response.message);
 						return;
 					}
-					
 					if(response.data != -1 ){
-						$(".admin-cat tr th a[data-no=" + response.data + "]").remove();
+						$(".admin-cat tr[data-no=" + no + "]").remove();
 						return;
 					}
 				},
@@ -112,12 +116,11 @@ $(function(){
 				}
 			});
 		});
-		
-		
-		
 });
 
 fetchList();
+
+
 </script>
 </head>
 <body>

@@ -71,8 +71,8 @@ public class BlogService {
 		return categoryRepository.categoryNewInsert(categoryVo);
 		
 	}
-	public int categoryDelete(Long no) {
-		return categoryRepository.categoryDelete(no);
+	public Boolean categoryDelete(Long no) {
+		return categoryRepository.categoryDelete(no) == 1;
 		
 	}
 	public int categoryCount(String id) {

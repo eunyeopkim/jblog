@@ -94,6 +94,7 @@ $(function(){
 		$(document).on('click','.admin-cat tr td a',function(event){
 			event.preventDefault();			
 			var no = $(this).data('no');
+			
 			console.log("delete   " + no);
 			$.ajax({
 				url: '${pageContext.request.contextPath }/${authUser.id}/api/delete/'+ no,
@@ -107,7 +108,7 @@ $(function(){
 						return;
 					}
 					if(response.data != -1 ){
-						$(".admin-cat tr[data-no=" + no + "]").remove();
+						
 						return;
 					}
 				},
@@ -115,6 +116,12 @@ $(function(){
 					console.error(status + " : " + e);
 				}
 			});
+			
+			$(this).parents('tr').remove();
+			console.log($(this).parents('tr'));
+			$('.admin-cat tr').remove();
+			fetchList();
+			
 		});
 });
 
@@ -134,14 +141,7 @@ fetchList();
 					<li><a href="${pageContext.request.contextPath}/${authUser.id }/admin/write">글작성</a></li>
 				</ul>
 		      	<table class="admin-cat">
-		      		<tr>
-		      			<th>번호</th>
-		      			<th>카테고리명</th>
-		      			<th>포스트 수</th>
-		      			<th>설명</th>
-		      			<th>삭제</th>      			
-		      		</tr>
-						  
+		      	
 				</table>
       	
       			<h4 class="n-c">새로운 카테고리 추가</h4>
